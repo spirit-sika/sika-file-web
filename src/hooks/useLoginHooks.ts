@@ -40,13 +40,13 @@ export const useLoginHooks = () => {
   }
 
   // 加密登录/注册对象
-  function encryptUserModel(model: Partial<SikaUser & {captcha: string}>) {
+  function encryptUserModel(model: Partial<SikaUser>) {
     if (!publicKey.value || !encrypt || !encrypt.getPublicKey()) {
       throw new Error('encrypt tool error')
     }
     const username = encrypt.encrypt(model.username ?? '').toString()
     const password = encrypt.encrypt(model.password ?? '').toString()
-    const result = cloneDeep(model) as SikaUser & {captcha: string}
+    const result = cloneDeep(model) as LoginModel
     result.username = username
     result.password = password
     if (typeof model.nickname === 'string' && model.nickname.length > 0) {
@@ -80,7 +80,11 @@ export const useLoginHooks = () => {
    */
   function handleRegister() {
     // 使用公钥加密用户对象
-    postRegister(encryptUserModel(loginUser.value))
+    const registerDto = encryptUserModel(loginUser.value) as SikaUser & {captcha: string}
+    postRegister({
+      sikaUser: registerDto,
+      captcha: registerDto.captcha
+    })
       .then(res => {
         if (res.code !== 200) {
           throw res.message
@@ -88,7 +92,7 @@ export const useLoginHooks = () => {
         updateToken(res.data)
       })
       .then(() => {
-        return router.push('chat')
+        return router.push({name: 'tree'})
       })
       .then(() => {
         ElMessage.success('注册成功')

@@ -24,7 +24,7 @@
             </div>
             <div class="verify-inp">
               <input type="text" placeholder="Verification Code" v-model="loginUser.captcha" class="verify-input">
-              <img :src="captchaBase64" alt="FAILED" @click="loadCaptcha" v-show="captchaBase64.length > 0"/>
+              <img :src="captchaBase64" alt="click retry" @click="loadCaptcha" v-show="captchaBase64.length > 0"/>
             </div>
           </div>
 
@@ -55,13 +55,13 @@ const handleClick = ref<() => void>(handleLogin)
 const handleTipsSwitch = () => {
   if (currentType.value === 'LOGIN') {
     currentType.value = 'REGISTER'
-    inOrUpTips.value = "Don't have account?"
-    handleClick.value = handleLogin
+    inOrUpTips.value = "already has account!"
+    handleClick.value = handleRegister
   }
   else {
     currentType.value = 'LOGIN'
-    inOrUpTips.value = "already has account!"
-    handleClick.value = handleRegister
+    inOrUpTips.value = "Don't have account?"
+    handleClick.value = handleLogin
   }
 }
 
