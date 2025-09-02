@@ -11,12 +11,18 @@ export interface R<T = any> {
  * 实体公共字段
  */
 export interface BaseEntity {
-  createBy?: string
-  createTime?: string
-  createId?: number
-  updateBy?: string
-  updateTime?: string
-  updateId?: number
+  /** 创建时间 */
+  createTime: string;
+  /** 创建人用户名 */
+  createBy: string;
+  /** 创建人ID */
+  createId: number;
+  /** 更新时间 */
+  updateTime: string;
+  /** 更新人用户名 */
+  updateBy: string;
+  /** 更新人ID */
+  updateId: number;
 }
 
 /**

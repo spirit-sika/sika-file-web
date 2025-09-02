@@ -5,12 +5,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/file-tree',
+      redirect: '/file-tree/root',
       children: [
         {
-          path: '/file-tree',
+          path: '/file-tree/:id',
           name: 'tree',
-          component: () => import('@/views/FileTree.vue'),
+          component: () => import('@/views/FileListPage.vue'),
         },
       ],
     },

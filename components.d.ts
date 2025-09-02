@@ -20,6 +20,8 @@ declare module 'vue' {
     ElMain: typeof import('element-plus/es')['ElMain']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    FileItem: typeof import('./src/components/FileList/FileItem.vue')['default']
+    FileList: typeof import('./src/components/FileList/FileList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
