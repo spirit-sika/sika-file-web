@@ -1,13 +1,16 @@
 <template>
-  <file-list :file-list="dataList" />
+  <file-list
+    :file-list="dataList"
+    @to-dir="toDir"
+    @to-file="showFile"
+  />
 </template>
 
 <script setup lang="ts">
 import {useRoute, useRouter} from "vue-router";
-import {onMounted, shallowRef, watch} from 'vue'
+import {onBeforeMount, shallowRef, watch} from 'vue'
 import {requestFileList} from "@/api/fms.ts";
 import type {SikaFileMeta} from "@/types/fms.ts";
-import {MetaType} from "@/consts/FileConsts.ts";
 import FileList from "@/components/FileList/FileList.vue";
 const rootId = 'root'
 const route = useRoute();
@@ -36,26 +39,21 @@ const loadFileList = () => {
     })
 }
 
-/**
- * 处理文件或文件夹点击事件, 点击文件夹时重新请求文件夹中的文件列表
- * @param meta
- */
-const handleClick = (meta: SikaFileMeta) => {
-  if (meta.metaType === MetaType.FILE) {
-    ElMessage({
-      message: '暂不支持查看文件',
-      type: 'warning'
-    })
-    return
-  }
-  router.push({
-    path: `/file-tree/${meta.id}`
+const toDir = (id: string) => {
+  router.push({path: `/file-tree/${id}`})
+}
+
+const showFile = (file: SikaFileMeta) => {
+  console.log(file)
+  ElMessage({
+    message: '文件查看功能暂未开放',
+    type: 'warning'
   })
 }
 
 watch(() => route.params.id, loadFileList)
 
-onMounted(loadFileList)
+onBeforeMount(loadFileList)
 </script>
 
 <style scoped>
