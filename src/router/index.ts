@@ -8,7 +8,7 @@ const router = createRouter({
       redirect: '/file-tree/root',
       children: [
         {
-          path: '/file-tree/:id',
+          path: '/file-tree/:id?',
           name: 'tree',
           component: () => import('@/views/FileListPage.vue'),
         },

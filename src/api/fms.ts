@@ -4,6 +4,7 @@
 
 import {get} from "@/util/request.ts";
 import type {SikaFileMeta} from "@/types/fms.ts";
+import type {PageQuery, PageResponse} from "@/types/BaseTypes.ts";
 
 /**
  * 获取文件列表
@@ -13,4 +14,20 @@ export const requestFileList = async (dirId: string) => {
   return await get<SikaFileMeta[]>(`file`, {
     dirId
   })
+}
+
+/**
+ * 分页获取文件列表
+ * @param fileMetaDto 分页查询信息以及查询条件
+ */
+export const requestFilePage = async (fileMetaDto: PageQuery<Partial<SikaFileMeta>>) => {
+  return await get<PageResponse<SikaFileMeta>>(`file/page`, fileMetaDto)
+}
+
+/**
+ * 获取文件信息
+ * @param {string} id 文件或文件夹id
+ */
+export const requestFileInfo = async (id: string) => {
+  return await get<SikaFileMeta>(`file/info`, {id})
 }

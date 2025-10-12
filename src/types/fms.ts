@@ -24,6 +24,8 @@ export interface SikaFileMeta extends BaseEntity {
   previewPath: string;
   /** 文件系统中的绝对路径 */
   absolutePath: string;
+  /** 文件系统中的id路径, 使用/分隔 */
+  absoluteIdPath: string;
   /** 文件SHA256哈希值 */
   sha256: string;
   /** 目标区域（US/CN/ALL） */

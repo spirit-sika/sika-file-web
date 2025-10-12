@@ -66,7 +66,7 @@ export const get = <T = any>(url: string, data?: unknown, notAuth?: boolean) => 
         notAuth: notAuth
       })
     }
-    const dataStr = qs.stringify(data)
+    const dataStr = qs.stringify(data, {allowDots: true})
     return request<T>({
       url: `${url}?${dataStr}`,
       method: 'GET'

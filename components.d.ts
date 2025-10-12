@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActionBar: typeof import('./src/components/ActionBar/index.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -18,10 +19,13 @@ declare module 'vue' {
     ElImage: typeof import('element-plus/es')['ElImage']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMain: typeof import('element-plus/es')['ElMain']
+    ElPagination: typeof import('element-plus/es')['ElPagination']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
-    FileItem: typeof import('./src/components/FileList/FileItem.vue')['default']
+    FileGrid: typeof import('./src/components/FileGrid/index.vue')['default']
+    FileItem: typeof import('./src/components/FileGrid/FileItem.vue')['default']
     FileList: typeof import('./src/components/FileList/FileList.vue')['default']
+    PathNavigation: typeof import('./src/components/PathNavigation/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
