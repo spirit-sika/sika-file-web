@@ -1,20 +1,40 @@
 <template>
   <div class="actions-bar">
     <div class="file-type-filter">
-      <el-button :type="prop.selectedFilter === MetaTypeEnum.ALL_TYPE.value ? 'primary' : ''" @click="handleFilterChange">全部</el-button>
-      <el-button :type="prop.selectedFilter === MetaTypeEnum.DIR.value ? 'primary' : ''" @click="handleFilterChange">文件夹</el-button>
-      <el-button :type="prop.selectedFilter === MetaTypeEnum.FILE.value ? 'primary' : ''" @click="handleFilterChange">文件</el-button>
+      <el-button
+        :type="prop.activeFilter === MetaTypeEnum.ALL_TYPE.value ? 'primary' : ''"
+        @click="handleFilterChange(MetaTypeEnum.ALL_TYPE.value)"
+        plain
+      >
+        全部
+      </el-button>
+
+      <el-button
+        :type="prop.activeFilter === MetaTypeEnum.DIR.value ? 'primary' : ''"
+        @click="handleFilterChange(MetaTypeEnum.DIR.value)"
+        plain
+      >
+        文件夹
+      </el-button>
+
+      <el-button
+        :type="prop.activeFilter === MetaTypeEnum.FILE.value ? 'primary' : ''"
+        @click="handleFilterChange(MetaTypeEnum.FILE.value)"
+        plain
+      >
+        文件
+      </el-button>
     </div>
 
     <div class="search-container">
       <el-input
-        v-model="prop.searchText"
+        v-model="search"
         placeholder="搜索文件或文件夹..."
         :prefix-icon="Search"
         clearable
         @input="handleSearch"
       />
-      <el-button type="primary" :icon="Search">搜索</el-button>
+      <el-button type="primary" :icon="Search" plain @click="emitSearch">搜索</el-button>
     </div>
   </div>
 </template>
@@ -22,12 +42,13 @@
 <script setup lang="ts">
 import {MetaTypeEnum} from "@/consts/FileConsts.ts";
 import {Search} from "@element-plus/icons-vue";
+import {ref} from "vue";
 defineOptions({
   name: 'ActionBar'
 })
 
 const prop = defineProps({
-  selectedFilter: {
+  activeFilter: {
     type: Number,
     default: MetaTypeEnum.ALL_TYPE.value
   },
@@ -37,14 +58,20 @@ const prop = defineProps({
   }
 })
 
-const emit = defineEmits(['update:filter-change', 'update:searchText'])
+const search = ref<string>('')
 
-const handleFilterChange = () => {
-  emit('update:filter-change', prop.selectedFilter)
+const emit = defineEmits(['update:active-filter', 'update:search-text', 'filter-change'])
+
+const handleFilterChange = (active: number) => {
+  emit('update:active-filter', active)
 }
 
 const handleSearch = () => {
-  emit('update:searchText', prop.searchText)
+  emit('update:search-text', search.value)
+}
+
+const emitSearch = () => {
+  emit('filter-change', search.value)
 }
 </script>
 

@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import {requestFileInfo, requestFilePage} from "@/api/fms.ts";
 import type {SikaFileMeta} from "@/types/fms.ts";
 import {useRoute} from "vue-router";
@@ -92,6 +92,8 @@ export const useFileStore = defineStore('file',
         }
       }
     }
+
+    watch(fileType, pageFile)
 
     const handleSizeChange = (size: number) => {
       currentSize.value = size
