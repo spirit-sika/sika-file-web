@@ -34,7 +34,11 @@
     @current-change="handleCurrentChange"
   />
 
-  <upload-dialog v-model:visible="visible" v-model:dialog-type="dialogType"/>
+  <upload-dialog
+    v-model:visible="visible"
+    v-model:dialog-type="dialogType"
+    @complete="pageFile"
+  />
 </template>
 
 <script setup lang="ts">

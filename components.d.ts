@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ActionBar: typeof import('./src/components/ActionBar/index.vue')['default']
+    CreateFolder: typeof import('./src/components/uploadDialog/CreateFolder.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -30,5 +31,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     UploadDialog: typeof import('./src/components/uploadDialog/index.vue')['default']
+    UploadFile: typeof import('./src/components/uploadDialog/UploadFile.vue')['default']
   }
 }

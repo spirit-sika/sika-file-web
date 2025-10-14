@@ -2,20 +2,23 @@
   <el-dialog
     v-model="show"
     modal-class="overide-animation"
-    @open="console.log('open')"
-    @open-auto-focus="console.log('open-auto-focus')"
-    @opened="console.log('opened')"
-    @close="console.log('close')"
-    @close-auto-focus="console.log('close-auto-focus')"
-    @closed="console.log('closed')"
+    @close="close"
   >
     <template v-slot:default>
-      <span>{{prop.dialogType}}</span>
+      <div class="dialog-title-wrapper">
+        <span>{{title}}</span>
+      </div>
+      <template v-if="dialogType === 'mkdir'">
+        <create-folder ref="createFolderRef"/>
+      </template>
+      <template v-else>
+        <upload-file />
+      </template>
     </template>
     <template v-slot:footer>
       <div class="dialog-footer">
-        <el-button @click="show = false">Cancel</el-button>
-        <el-button type="primary" @click="show = false">Confirm</el-button>
+        <el-button @click="cancel">Cancel</el-button>
+        <el-button type="primary" @click="submit">Confirm</el-button>
       </div>
     </template>
   </el-dialog>
@@ -24,6 +27,11 @@
 <script setup lang="ts">
 
 import {computed} from "vue";
+import {useTemplateRef} from "vue";
+import {useRoute} from "vue-router";
+import CreateFolder from "@/components/uploadDialog/CreateFolder.vue";
+import UploadFile from "@/components/uploadDialog/UploadFile.vue";
+import {postDir} from "@/api/fms.ts";
 
 defineOptions({
   name: 'UploadDialog'
@@ -40,8 +48,9 @@ const prop = defineProps({
   }
 })
 
-const emit = defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible', 'complete'])
 
+const route = useRoute()
 const show = computed({
   get() {
     return prop.visible
@@ -50,8 +59,62 @@ const show = computed({
     emit('update:visible', val)
   }
 })
+const title = computed(() => {
+  return prop.dialogType === 'mkdir' ? 'Create Folder' : 'Upload File'
+})
+
+const createFolderRef = useTemplateRef('createFolderRef')
+const submit = () => {
+  if (createFolderRef.value) {
+    createFolderRef.value.ruleFormRef!.validate()
+      .then(valid => {
+        if (!valid) {
+          return
+        }
+        const content = createFolderRef.value!.model.title
+        createFolderRef.value!.clearAndReset()
+        postDir(content, route.params.id as string)
+          .then(res => {
+            if (res.code !== 200) {
+              throw new Error(res.message)
+            }
+            show.value = false
+            ElMessage.success('create folder success!')
+            emit('complete')
+          })
+          .catch(err => {
+            ElMessage.error(err.message)
+          })
+      })
+  }
+  else {
+    ElMessage.error('could not found the form component')
+  }
+}
+
+const cancel = () => {
+  close()
+}
+
+const close = () => {
+  if (createFolderRef.value) {
+    createFolderRef.value.clearAndReset()
+  }
+  show.value = false
+}
 </script>
 
 <style scoped>
+.dialog-title-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  margin-bottom: 10px;
 
+  > span {
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
 </style>

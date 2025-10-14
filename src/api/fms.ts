@@ -2,7 +2,7 @@
  * 文件系统相关API, 如文件列表获取, 文件元数据获取等
  */
 
-import {get} from "@/util/request.ts";
+import {get, post} from "@/util/request.ts";
 import type {SikaFileMeta} from "@/types/fms.ts";
 import type {PageQuery, PageResponse} from "@/types/BaseTypes.ts";
 
@@ -38,5 +38,5 @@ export const requestFileInfo = async (id: string) => {
  * @param currentId 当前文件夹ID, 创建的目标文件夹的父级Id, 为空时创建在根目录下
  */
 export const postDir = async (name: string, currentId?: string) => {
-  return await get<SikaFileMeta>(`file/mkdir?name=${name}&id=${currentId}`)
+  return await post<SikaFileMeta>(`file/mkdir?name=${name}&id=${currentId}`)
 }
