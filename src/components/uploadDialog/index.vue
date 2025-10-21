@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="show"
-    modal-class="overide-animation"
+    modal-class="override-animation"
     @close="close"
   >
     <template v-slot:default>
@@ -12,7 +12,7 @@
         <create-folder ref="createFolderRef"/>
       </template>
       <template v-else>
-        <upload-file />
+        <upload-file ref="uploadFileRef"/>
       </template>
     </template>
     <template v-slot:footer>
@@ -64,31 +64,48 @@ const title = computed(() => {
 })
 
 const createFolderRef = useTemplateRef('createFolderRef')
+const uploadFileRef = useTemplateRef('uploadFileRef')
 const submit = () => {
-  if (createFolderRef.value) {
-    createFolderRef.value.ruleFormRef!.validate()
-      .then(valid => {
-        if (!valid) {
-          return
-        }
-        const content = createFolderRef.value!.model.title
-        createFolderRef.value!.clearAndReset()
-        postDir(content, route.params.id as string)
-          .then(res => {
-            if (res.code !== 200) {
-              throw new Error(res.message)
-            }
-            show.value = false
-            ElMessage.success('create folder success!')
-            emit('complete')
-          })
-          .catch(err => {
-            ElMessage.error(err.message)
-          })
-      })
+  if (prop.dialogType === 'mkdir') {
+    if (createFolderRef.value) {
+      createFolderRef.value.ruleFormRef!.validate()
+        .then(valid => {
+          if (!valid) {
+            return
+          }
+          const content = createFolderRef.value!.model.title
+          createFolderRef.value!.clearAndReset()
+          postDir(content, route.params.id as string)
+            .then(res => {
+              if (res.code !== 200) {
+                throw new Error(res.message)
+              }
+              show.value = false
+              ElMessage.success('create folder success!')
+              emit('complete')
+            })
+            .catch(err => {
+              ElMessage.error(err.message)
+            })
+        })
+    }
+    else {
+      ElMessage.error('could not found the form component')
+    }
   }
   else {
-    ElMessage.error('could not found the form component')
+    if (uploadFileRef.value) {
+      if (uploadFileRef.value.finishing) {
+        ElMessage.warning('Uploading... Please wait!')
+      }
+      else {
+        show.value = false
+        emit('complete')
+      }
+    }
+    else {
+      ElMessage.error('could not found the upload component')
+    }
   }
 }
 

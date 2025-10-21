@@ -19,7 +19,7 @@ export const useFileStore = defineStore('file',
 
     // 分页
     const currentPage = ref<number>(1)
-    const currentSize = ref<number>(2)
+    const currentSize = ref<number>(10)
     const total = ref<number>(0)
 
     const fileList = ref<SikaFileMeta[]>([])
