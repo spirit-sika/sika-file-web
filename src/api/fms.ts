@@ -38,7 +38,7 @@ export const requestFileInfo = async (id: string) => {
  * @param currentId 当前文件夹ID, 创建的目标文件夹的父级Id, 为空时创建在根目录下
  */
 export const postDir = async (name: string, currentId?: string) => {
-  return await post<SikaFileMeta>(`file/mkdir?name=${name}&id=${currentId}`)
+  return await post<SikaFileMeta>(`file/mkdir?name=${name}&parentId=${currentId}`)
 }
 
 export const postFileWithProgress = async (data: FormData, onMessage?: (data: number) => void, onError?: (error: Error) => void) => {
