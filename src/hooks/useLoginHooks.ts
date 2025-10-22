@@ -65,7 +65,7 @@ export const useLoginHooks = () => {
         }
         // 登录成功存储token并跳转
         updateToken(res.data)
-        return router.push({name: 'tree'})
+        return router.push({name: 'grid'})
       })
       .then(() => ElMessage.success('登录成功'))
       .catch(err => {
@@ -92,7 +92,7 @@ export const useLoginHooks = () => {
         updateToken(res.data)
       })
       .then(() => {
-        return router.push({name: 'tree'})
+        return router.push({name: 'grid'})
       })
       .then(() => {
         ElMessage.success('注册成功')

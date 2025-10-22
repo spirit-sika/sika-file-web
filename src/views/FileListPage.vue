@@ -11,7 +11,10 @@
   </div>
 
   <!-- 路径导航 -->
-  <PathNavigation :path="pathLayers"/>
+  <PathNavigation
+    :path="pathLayers"
+    @navigate="navigate"
+  />
 
   <!-- 操作栏：搜索和筛选 -->
   <ActionBar
@@ -21,7 +24,6 @@
   />
 
   <!-- 文件列表 -->
-  <!-- todo: 过滤后为空或者是空文件时默认提示内容 -->
   <FileGrid :files="fileList"/>
 
   <el-pagination
@@ -42,9 +44,9 @@
 </template>
 
 <script setup lang="ts">
-import {useRoute, useRouter} from "vue-router";
+import {useRouter, onBeforeRouteUpdate, type NavigationGuardNext} from "vue-router";
 import { storeToRefs } from 'pinia'
-import {onBeforeMount, watch} from 'vue'
+import {onBeforeMount} from 'vue'
 import PathNavigation from "@/components/PathNavigation/index.vue";
 import ActionBar from "@/components/ActionBar/index.vue";
 import {FolderAdd, Upload} from "@element-plus/icons-vue";
@@ -54,7 +56,6 @@ import FileGrid from "@/components/FileGrid/index.vue";
 import UploadDialog from "@/components/uploadDialog/index.vue";
 
 
-const route = useRoute();
 const router = useRouter();
 
 const fileStore = useFileStore()
@@ -70,17 +71,24 @@ const openDialog = (type: 'upload' | 'mkdir') => {
 }
 
 const toHome = () => {
-  router.push('/file-tree/root')
+  router.push('/file-grid/root')
 }
-watch(() => route.params.id, () => {
-  pageFile()
-  loadPathInfo()
+
+const loadData = (dirID?:string) => {
+  pageFile(dirID)
+  loadPathInfo(dirID)
+}
+
+onBeforeRouteUpdate((to, form, next:NavigationGuardNext) => {
+  loadData(to.params.id as string)
+  next()
 })
 
-onBeforeMount(() => {
-  pageFile()
-  loadPathInfo()
-})
+const navigate = (dirID: string) => {
+  router.push(`/file-grid/${dirID}`)
+}
+
+onBeforeMount(loadData)
 </script>
 
 <style scoped>

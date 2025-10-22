@@ -5,6 +5,7 @@ import type {SikaFileMeta} from "@/types/fms.ts";
 import {useRoute} from "vue-router";
 import type {PageQuery} from "@/types/BaseTypes.ts";
 import {MetaTypeEnum} from "@/consts/FileConsts.ts";
+import {cloneDeep} from "lodash";
 
 const rootId = 'root'
 const rootPath = '全部文件'
@@ -32,9 +33,13 @@ export const useFileStore = defineStore('file',
     /**
      * 加载当前路径信息, 并且面包屑导航所需信息
      */
-    const loadPathInfo = () => {
-      const id = route.params.id === rootId ? '' : route.params.id as string
-      if (id === '') {
+    const loadPathInfo = (dirID?: string) => {
+      let id = dirID;
+      if (!id) {
+        id = route.params.id === rootId ? '' : route.params.id as string
+      }
+      if (id === '' || id === rootId) {
+        pathLayers.value = cloneDeep(rootPathLayer)
         return
       }
       requestFileInfo(id)
@@ -48,11 +53,12 @@ export const useFileStore = defineStore('file',
           const pathArray = currentAbsolutePath.split("/")
           const pathIdArray = currentAbsoluteIdPath.split("/")
           if (pathArray.length <= 1) {
-            pathLayers.value = rootPathLayer
+            pathLayers.value = cloneDeep(rootPathLayer)
           }
           else {
-            pathLayers.value = rootPathLayer
+            pathLayers.value = cloneDeep(rootPathLayer)
             for(let index = 0; index < pathArray.length; index++) {
+              if (!pathIdArray[index]) continue;
               pathLayers.value.push({id: pathIdArray[index], name: pathArray[index] })
             }
           }
@@ -65,8 +71,8 @@ export const useFileStore = defineStore('file',
     /**
      * 获取文件列表, 默认获取根目录, 否则由路由参数决定获取那个文件夹中的文件
      */
-    const pageFile = () => {
-      requestFilePage(buildFilePageQueryParam())
+    const pageFile = (dirID?: string) => {
+      requestFilePage(buildFilePageQueryParam(dirID))
         .then(res => {
           if (res.code !== 200) {
             throw new Error(res.message)
@@ -80,8 +86,14 @@ export const useFileStore = defineStore('file',
         })
     }
 
-    const buildFilePageQueryParam = (): PageQuery<Partial<SikaFileMeta>> => {
-      const id = route.params.id === rootId ? '' : route.params.id as string
+    const buildFilePageQueryParam = (dirID?: string): PageQuery<Partial<SikaFileMeta>> => {
+      let id = dirID;
+      if (id === rootId) {
+        id = ''
+      }
+      else if (!id) {
+        id = route.params.id === rootId ? '' : route.params.id as string
+      }
       return {
         current: currentPage.value,
         size: currentSize.value,
@@ -93,7 +105,7 @@ export const useFileStore = defineStore('file',
       }
     }
 
-    watch(fileType, pageFile)
+    watch(fileType, () => pageFile())
 
     const handleSizeChange = (size: number) => {
       currentSize.value = size

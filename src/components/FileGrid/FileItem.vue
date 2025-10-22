@@ -27,10 +27,10 @@ const emit = defineEmits(['open-folder', 'preview-file'])
 
 const handleClick = () => {
   if (prop.file.metaType === MetaTypeEnum.DIR.value) {
-    emit('open-folder', prop);
+    emit('open-folder', prop.file);
   }
   else {
-    emit('preview-file', prop);
+    emit('preview-file', prop.file);
   }
 };
 

@@ -4,7 +4,7 @@
       v-for="(item, index) in path"
       :key="index"
       class="path-item"
-      @click="$emit('navigate', index)"
+      @click="navigateTo(item.id)"
     >
       <span>{{ item.name }}</span>
       <span v-if="index < path.length - 1" class="path-separator">/</span>
@@ -48,7 +48,7 @@ const navigateTo = (dirId: string) => {
 }
 
 .path-separator {
-  margin: 0 8px;
+  margin: 3px 8px;
   color: #c0c4cc;
 }
 </style>
