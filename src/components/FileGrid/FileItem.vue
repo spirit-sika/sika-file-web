@@ -1,8 +1,12 @@
 <template>
-  <div class="file-item" @click="handleClick">
+  <div
+    class="file-item"
+    @click="handleClick"
+    @contextmenu.prevent="switchMenu"
+  >
     <div class="file-icon">
       <el-icon v-if="prop.file.metaType === MetaTypeEnum.DIR.value" class="folder-icon" size="48">
-        <Folder />
+        <Folder/>
       </el-icon>
     </div>
     <div class="file-name">{{ prop.file.originalName }}</div>
@@ -10,13 +14,23 @@
       {{ formattedSize(prop.file.fileSize) }} · {{ prop.file.createTime }}
     </div>
   </div>
+
+  <right-menu ref="rightMenuRef" :menu-items="menuItems" group-id="fileItem"/>
 </template>
 
 <script setup lang="ts">
-import { ElIcon } from 'element-plus';
-import { Folder } from '@element-plus/icons-vue';
+/**
+ * @component FileItem
+ * @description 文件与文件夹展示组件，提供文件或文件夹的图标、名称、大小等信息
+ */
+import {ref, useTemplateRef} from 'vue';
+import {ElIcon} from 'element-plus';
+import {Folder} from '@element-plus/icons-vue';
 import type {SikaFileMeta} from "@/types/fms.ts";
 import {MetaTypeEnum} from "@/consts/FileConsts.ts";
+import RightMenu from "@/components/RightMenu/index.vue";
+import {computed} from "vue";
+
 defineOptions({
   name: 'FileItem'
 })
@@ -28,8 +42,7 @@ const emit = defineEmits(['open-folder', 'preview-file'])
 const handleClick = () => {
   if (prop.file.metaType === MetaTypeEnum.DIR.value) {
     emit('open-folder', prop.file);
-  }
-  else {
+  } else {
     emit('preview-file', prop.file);
   }
 };
@@ -37,6 +50,53 @@ const handleClick = () => {
 const formattedSize = (size: number) => {
   return size === 0 ? 0 : (size / 1024).toFixed(2) + 'KB';
 }
+
+const rightMenuRef = useTemplateRef('rightMenuRef')
+const folderMenuItems = [
+  {
+    label: 'Open',
+    action: () => {
+      console.log('open-folder');
+    }
+  },
+  {
+    label: 'Delete',
+    action: () => {
+      console.log('delete');
+    }
+  }
+];
+
+const fileMenuItems = [
+  {
+    label: 'Preview',
+    action: () => {
+      console.log('preview-file');
+    }
+  },
+  {
+    label: 'Download',
+    action: () => {
+      console.log('download');
+    }
+  },
+  {
+    label: 'Delete',
+    action: () => {
+      console.log('delete');
+    }
+  }
+];
+
+const switchMenu = (event: MouseEvent) => {
+  if (!rightMenuRef.value) {
+    return
+  }
+  rightMenuRef.value.menuVisible ? rightMenuRef.value.hideMenu() : rightMenuRef.value.showMenu('fileItem', event)
+}
+const menuItems = computed(() => {
+  return prop.file.metaType === MetaTypeEnum.DIR.value ? folderMenuItems : fileMenuItems;
+})
 </script>
 
 <style scoped>
@@ -48,6 +108,7 @@ const formattedSize = (size: number) => {
   cursor: pointer;
   transition: all 0.3s;
   background: white;
+  user-select: none;
 }
 
 .file-item:hover {

@@ -13,11 +13,18 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @component PathNavigation
+ * @description 路径导航组件, 提供当前文件夹路径展示与单交跳转控制
+ * @props {Props} 路径数据数组, 包含文件夹id与名称
+ */
 defineOptions({
   name: 'PathNavigation'
 })
 
-defineProps<{path: {id: string, name: string}[]}>()
+interface Props {path: {id: string, name: string}[]}
+
+defineProps<Props>()
 
 const emit = defineEmits(['navigate'])
 

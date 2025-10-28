@@ -37,13 +37,22 @@ defineOptions({
   name: 'SikaUpload'
 })
 
+// 是否展示进度条
 const showProgress = ref(true)
+// 进度条样式
 const progressStatus = ref<''|'success'|'exception'|'warning'>('')
+// 上传进度
 const percentage = ref(0)
+// 文件列表
 const fileList = ref<UploadUserFile[]>([])
 const route = useRoute()
+// 是否上传完成
 const finishing = ref(false)
 
+/**
+ * 文件上传, 预检验文件大小通过后将文件上传到当前文件夹并处理进度
+ * @param options
+ */
 const handleUpload = async (options: UploadRequestOptions) => {
   if (options.file.size > 100 * 1024 * 1024) {
     ElMessage.error('file size is too large')
@@ -70,6 +79,10 @@ const handleUpload = async (options: UploadRequestOptions) => {
   })
 }
 
+/**
+ * 上传文件时处理进度
+ * @param progress
+ */
 const onProgress = (progress: number) => {
   if (progress < 25) {
     progressStatus.value = 'warning'
@@ -87,11 +100,18 @@ const onProgress = (progress: number) => {
   }
 }
 
+/**
+ * 清除上传状态与文件列表
+ */
+const clearStatus = () => {
+  progressStatus.value = ''
+  percentage.value = 0
+  showProgress.value = false
+  fileList.value = []
+}
+
 defineExpose({
-  finishing
+  finishing,
+  clearStatus
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -14,6 +14,10 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @component FileGrid
+ * @description 文件列表容器组件
+ */
 import FileItem from './FileItem.vue'
 import type {SikaFileMeta} from "@/types/fms.ts";
 import {MetaTypeEnum} from "@/consts/FileConsts.ts";
@@ -28,7 +32,8 @@ const router = useRouter()
 const handleItemClick = (file: SikaFileMeta) => {
   if (file.metaType === MetaTypeEnum.DIR.value) {
     router.push(`/file-grid/${file.id}`)
-  } else {
+  }
+  else {
     // todo: preview or download
   }
 }

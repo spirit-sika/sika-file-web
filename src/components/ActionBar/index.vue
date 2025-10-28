@@ -40,6 +40,10 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * @component ActionBar
+ * @description 文件系统操作相关组件, 包含上传文件, 上传文件夹, 搜索等功能
+ */
 import {MetaTypeEnum} from "@/consts/FileConsts.ts";
 import {Search} from "@element-plus/icons-vue";
 import {ref} from "vue";

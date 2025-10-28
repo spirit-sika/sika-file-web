@@ -9,7 +9,7 @@
         <span>{{title}}</span>
       </div>
       <template v-if="dialogType === 'mkdir'">
-        <create-folder ref="createFolderRef"/>
+        <create-folder ref="createFolderRef" @complete="submit"/>
       </template>
       <template v-else>
         <upload-file ref="uploadFileRef"/>
@@ -25,7 +25,10 @@
 </template>
 
 <script setup lang="ts">
-
+/**
+ * @component UploadDialog
+ * @description 文件上传与新建文件夹的对话框容器组件
+ */
 import {computed} from "vue";
 import {useTemplateRef} from "vue";
 import {useRoute} from "vue-router";
@@ -51,6 +54,10 @@ const prop = defineProps({
 const emit = defineEmits(['update:visible', 'complete'])
 
 const route = useRoute()
+
+/**
+ * 内部维护的弹窗显示控制标识, 与外部绑定的visible双向绑定
+ */
 const show = computed({
   get() {
     return prop.visible
@@ -59,6 +66,10 @@ const show = computed({
     emit('update:visible', val)
   }
 })
+
+/**
+ * 弹窗标题
+ */
 const title = computed(() => {
   return prop.dialogType === 'mkdir' ? 'Create Folder' : 'Upload File'
 })
@@ -100,6 +111,7 @@ const submit = () => {
       }
       else {
         show.value = false
+        uploadFileRef.value.clearStatus()
         emit('complete')
       }
     }
