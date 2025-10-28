@@ -23,7 +23,7 @@
  * @component FileItem
  * @description 文件与文件夹展示组件，提供文件或文件夹的图标、名称、大小等信息
  */
-import {ref, useTemplateRef} from 'vue';
+import {useTemplateRef} from 'vue';
 import {ElIcon} from 'element-plus';
 import {Folder} from '@element-plus/icons-vue';
 import type {SikaFileMeta} from "@/types/fms.ts";
