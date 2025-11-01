@@ -35,10 +35,11 @@ export const useFileStore = defineStore('file',
      */
     const loadPathInfo = (dirID?: string) => {
       let id = dirID;
+      // 没有传递id, 尝试在url获取
       if (!id) {
         id = route.params.id === rootId ? '' : route.params.id as string
       }
-      if (id === '' || id === rootId) {
+      if (typeof id === 'undefined' || id === '' || id === rootId) {
         pathLayers.value = cloneDeep(rootPathLayer)
         return
       }

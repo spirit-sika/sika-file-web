@@ -79,7 +79,7 @@ const loadData = (dirID?:string) => {
   loadPathInfo(dirID)
 }
 
-onBeforeRouteUpdate((to, form, next:NavigationGuardNext) => {
+onBeforeRouteUpdate((to, _, next:NavigationGuardNext) => {
   loadData(to.params.id as string)
   next()
 })

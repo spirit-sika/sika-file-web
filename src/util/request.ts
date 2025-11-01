@@ -22,13 +22,13 @@ instance.defaults.headers['Content-Type'] = 'application/json;charset=utf-8';
 
 instance.interceptors.request.use((config: SikaRequestConfig) => {
   // 需要鉴权接口处理, 校验用户是否已登录
-  if (config.notAuth === undefined || !config.notAuth) {
+  if (typeof config.notAuth === 'undefined' || !config.notAuth) {
     if (config.headers instanceof AxiosHeaders) {
       const token = getToken();
-      // TODO 获取不到token, 跳转登录页
-      // if (!token) {
-      //   window.location.href = '/login'
-      // }
+      // 获取不到token跳转登录页
+      if (!token) {
+        window.location.href = '/login'
+      }
       config.headers[TOKEN_KEY] = token
     }
     else {
@@ -69,7 +69,8 @@ export const get = <T = any>(url: string, data?: unknown, notAuth?: boolean) => 
     const dataStr = qs.stringify(data, {allowDots: true})
     return request<T>({
       url: `${url}?${dataStr}`,
-      method: 'GET'
+      method: 'GET',
+      notAuth: notAuth
     })
   }
 

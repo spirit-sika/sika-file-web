@@ -19,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeUnmount, ref} from 'vue'
 import {storeToRefs} from "pinia";
 import {useRightMenuStore} from "@/stores/RightMenu.ts";
 
@@ -34,8 +33,7 @@ interface MenuItem {
 }
 
 interface Prop {
-  menuItems: MenuItem[],
-  groupId: string
+  menuItems: MenuItem[]
 }
 
 withDefaults(defineProps<Prop>(), {
@@ -45,43 +43,24 @@ withDefaults(defineProps<Prop>(), {
 const rightMenuStore = useRightMenuStore()
 const emit = defineEmits(['menu-click'])
 
-const {menuVisible} = storeToRefs(rightMenuStore)
-const menuX = ref(0)
-const menuY = ref(0)
+const {menuVisible, menuX, menuY} = storeToRefs(rightMenuStore)
+const {menuSwitch} = rightMenuStore
 
-const showMenu = (groupId: string, event: MouseEvent) => {
-  menuVisible.value = false;
-  menuX.value = event.clientX;
-  menuY.value = event.clientY;
-  menuVisible.value = true;
-
-  // 添加全局点击监听器来隐藏菜单
-  setTimeout(() => {
-    document.addEventListener('click', hideMenu);
-  }, 0);
-}
-
-const hideMenu = () => {
-  menuVisible.value = false
-  document.removeEventListener('click', hideMenu);
-}
 
 const handleClick = (action?: () => void) => {
-  emit('menu-click', action ?? defaultAction);
-  hideMenu();
+  if (action && typeof action === 'function') {
+    action()
+    emit('menu-click')
+  }
+  else {
+    defaultAction()
+  }
+  menuSwitch()
 }
 
-const defaultAction = () => {}
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', hideMenu);
-})
-
-defineExpose({
-  showMenu,
-  hideMenu,
-  menuVisible
-})
+const defaultAction = () => {
+  emit('menu-click')
+}
 </script>
 
 <style scoped>

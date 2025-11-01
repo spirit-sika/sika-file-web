@@ -9,8 +9,11 @@
       :file="file"
       @open-folder="handleItemClick"
       @preview-file="handleItemClick"
+      @right-click="menuSwitch"
     />
   </div>
+
+  <right-menu ref="rightMenuRef" :menu-items="menuItems"/>
 </template>
 
 <script setup lang="ts">
@@ -22,6 +25,10 @@ import FileItem from './FileItem.vue'
 import type {SikaFileMeta} from "@/types/fms.ts";
 import {MetaTypeEnum} from "@/consts/FileConsts.ts";
 import {useRouter} from "vue-router";
+import RightMenu from "@/components/RightMenu/index.vue";
+import {useRightMenuStore} from "@/stores/RightMenu.ts";
+import {storeToRefs} from "pinia";
+
 defineOptions({
   name: 'FileGrid'
 })
@@ -37,6 +44,12 @@ const handleItemClick = (file: SikaFileMeta) => {
     // todo: preview or download
   }
 }
+
+const rightMenuStore = useRightMenuStore()
+
+const {menuSwitch} = rightMenuStore
+const {menuItems} = storeToRefs(rightMenuStore)
+
 </script>
 
 <style scoped>

@@ -3,6 +3,7 @@
     v-model="show"
     modal-class="override-animation"
     @close="close"
+    @opened="onDialogOpened"
   >
     <template v-slot:default>
       <div class="dialog-title-wrapper">
@@ -118,6 +119,11 @@ const submit = () => {
     else {
       ElMessage.error('could not found the upload component')
     }
+  }
+}
+const onDialogOpened = () => {
+  if (prop.dialogType === 'mkdir' && createFolderRef.value) {
+    createFolderRef.value.focus()
   }
 }
 

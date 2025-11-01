@@ -8,7 +8,11 @@
     @submit.native.prevent
   >
     <el-form-item label="folder name" prop="title">
-      <el-input v-model="model.title" @keyup.enter="$emit('complete')"/>
+      <el-input
+        ref="inputRef"
+        v-model="model.title"
+        @keyup.enter="$emit('complete')"
+      />
     </el-form-item>
   </el-form>
 </template>
@@ -25,7 +29,7 @@
  * - eventName: 触发时机说明
  */
 
-import {reactive, ref} from 'vue';
+import {nextTick, reactive, ref} from 'vue';
 import type {FormInstance, FormRules} from 'element-plus';
 
 defineEmits(['complete'])
@@ -42,6 +46,11 @@ const model = ref<{title: string}>({title: ''});
  * 表单实例
  */
 const ruleFormRef = ref<FormInstance>()
+
+/**
+ * 输入框实例
+ */
+const inputRef = ref<HTMLInputElement|null>(null)
 
 /**
  * 检验规则
@@ -70,10 +79,20 @@ function clearAndReset() {
   ruleFormRef.value?.resetFields()
 }
 
+/**
+ * 自动聚焦到输入框
+ */
+const focus = () => {
+  nextTick(() => {
+    inputRef.value?.focus()
+  })
+}
+
 defineExpose({
   model,
   ruleFormRef,
   validate,
-  clearAndReset
+  clearAndReset,
+  focus
 })
 </script>
